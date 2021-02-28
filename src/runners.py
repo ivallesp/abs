@@ -2,10 +2,19 @@ from tqdm import trange
 from src import metrics
 import numpy as np
 import torch
+import os
 
 
 def train(
-    net, criterion, optimizer, train_dataloader, test_dataloader, n_epochs, device
+    net,
+    criterion,
+    optimizer,
+    train_dataloader,
+    test_dataloader,
+    n_epochs,
+    device,
+    save_path,
+    save_every_n_epochs,
 ):
     """Trains the model on the supplied train data during n_epochs.
 
@@ -17,12 +26,14 @@ def train(
         test_dataloader (torch.utils.data.dataloader.DataLoader): test set
         n_epochs (int): number of epochs to train
         device (str): 'cuda' or 'cpu'
+        save_path (str): folder where the checkpoints of the models will be dumped
+        save_every_n_epochs (int): number of epochs after checkpoint
 
     Returns:
         model (torch.nn.Module): model trained
     """
     net = net.to(device)
-    pb = trange(n_epochs, desc="", leave=True)
+    pb = trange(n_epochs + 1, desc="", leave=True)
     # Calculate initial loss
     metrics_dict = eval_epoch(
         net=net,
@@ -32,6 +43,17 @@ def train(
     )
     avg_loss = metrics_dict.pop("crossentropy")
     for epoch in pb:
+        if epoch % save_every_n_epochs == 0:
+            torch.save(
+                {
+                    "alias": os.path.split(save_path)[-1],
+                    "epoch": epoch,
+                    "model_state_dict": net.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                },
+                os.path.join(save_path, f"e_{epoch:03d}.pt"),
+            )
+
         metrics_dict = eval_epoch(net=net, dataloader=test_dataloader, device=device)
         metrics_test = [
             name + ": " + str(round(value, 3)) for (name, value) in metrics_dict.items()
