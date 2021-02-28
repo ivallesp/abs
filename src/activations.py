@@ -1,7 +1,17 @@
 import torch
 import inspect
 import sys
-from torch.nn.functional import relu, leaky_relu, softplus, silu, elu, selu, gelu
+from torch.nn.functional import (
+    relu,
+    leaky_relu,
+    softplus,
+    silu,
+    elu,
+    selu,
+    gelu,
+    sigmoid,
+    tanh,
+)
 
 
 swish = silu
