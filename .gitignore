@@ -1,0 +1,19 @@
+# Vscode
+.vscode
+
+# Virtual environment
+.venv
+
+# Notebooks folder
+notebooks
+
+# Python garbage
+*.pyc
+
+# Models path
+models
+model
+models_*
+
+# Data path
+data
