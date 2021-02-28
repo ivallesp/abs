@@ -33,7 +33,7 @@ def get_model(name, params):
 
     # Define the loss and the optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.RMSprop(net.parameters(), lr=0.0001)
+    optimizer = optim.Adam(net.parameters(), lr=0.0001)
     return net, criterion, optimizer
 
 
