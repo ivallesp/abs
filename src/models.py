@@ -58,9 +58,9 @@ class TestNet(nn.Module):
         return x
 
 
-class Conv4(nn.Module):
+class Conv6(nn.Module):
     def __init__(self, n_outputs, activation_name):
-        super(Conv4, self).__init__()
+        super(Conv6, self).__init__()
         self.pool = nn.MaxPool2d(2, 2)
         self.activation = get_activation(activation_name)
         self.conv1_1 = nn.Conv2d(3, 64, 3, padding=(1, 1))
@@ -83,6 +83,58 @@ class Conv4(nn.Module):
         h = self.activation(self.conv3_1(h))
         h = self.pool(self.activation(self.conv3_2(h)))
         h = h.view(-1, 256 * 4 * 4)
+
+        h = self.activation(self.fc1(h))
+        h = self.activation(self.fc2(h))
+        h = self.fc3(h)
+        return h
+
+
+class Conv4(nn.Module):
+    def __init__(self, n_outputs, activation_name):
+        super(Conv4, self).__init__()
+        self.pool = nn.MaxPool2d(2, 2)
+        self.activation = get_activation(activation_name)
+        self.conv1_1 = nn.Conv2d(3, 64, 3, padding=(1, 1))
+        self.conv1_2 = nn.Conv2d(64, 64, 3, padding=(1, 1))
+        self.conv2_1 = nn.Conv2d(64, 128, 3, padding=(1, 1))
+        self.conv2_2 = nn.Conv2d(128, 128, 3, padding=(1, 1))
+
+        self.fc1 = nn.Linear(128 * 8 * 8, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.fc3 = nn.Linear(256, n_outputs)
+
+    def forward(self, x):
+        h = self.activation(self.conv1_1(x))
+        h = self.pool(self.activation(self.conv1_2(h)))
+
+        h = self.activation(self.conv2_1(h))
+        h = self.pool(self.activation(self.conv2_2(h)))
+
+        h = h.view(-1, 128 * 8 * 8)
+
+        h = self.activation(self.fc1(h))
+        h = self.activation(self.fc2(h))
+        h = self.fc3(h)
+        return h
+
+
+class Conv2(nn.Module):
+    def __init__(self, n_outputs, activation_name):
+        super(Conv2, self).__init__()
+        self.pool = nn.MaxPool2d(2, 2)
+        self.activation = get_activation(activation_name)
+        self.conv1_1 = nn.Conv2d(3, 64, 3, padding=(1, 1))
+        self.conv1_2 = nn.Conv2d(64, 64, 3, padding=(1, 1))
+        self.fc1 = nn.Linear(64 * 16 * 16, 256)
+        self.fc2 = nn.Linear(256, 256)
+        self.fc3 = nn.Linear(256, n_outputs)
+
+    def forward(self, x):
+        h = self.activation(self.conv1_1(x))
+        h = self.pool(self.activation(self.conv1_2(h)))
+
+        h = h.view(-1, 64 * 16 * 16)
 
         h = self.activation(self.fc1(h))
         h = self.activation(self.fc2(h))
