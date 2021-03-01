@@ -72,7 +72,7 @@ def main():
             params={"n_outputs": len(classes), "activation_name": activation_name},
             n_epochs=N_EPOCHS,
         )
-        initialize_weights(net)
+        # initialize_weights(net)
 
         # Train and eval
         train(
