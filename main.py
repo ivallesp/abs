@@ -6,6 +6,9 @@ from src.model_tools import set_random_seed, initialize_weights
 from src.paths import get_model_folder
 
 
+N_EPOCHS = 100
+
+
 ACTIVATIONS = [
     "absolute",
     "relu",
@@ -64,9 +67,10 @@ def main():
         print(f"Training model: '{alias}'")
 
         # Load model
-        net, criterion, optimizer = get_model(
+        net, criterion, optimizer, lr_scheduler = get_model(
             name=model_name,
             params={"n_outputs": len(classes), "activation_name": activation_name},
+            n_epochs=N_EPOCHS,
         )
         initialize_weights(net)
 
@@ -75,9 +79,10 @@ def main():
             net=net,
             criterion=criterion,
             optimizer=optimizer,
+            lr_scheduler=lr_scheduler,
             train_dataloader=train_dl,
             test_dataloader=test_dl,
-            n_epochs=100,
+            n_epochs=N_EPOCHS,
             device="cuda",
             save_path=model_folder,
             save_every_n_epochs=5,

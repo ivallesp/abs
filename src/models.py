@@ -3,11 +3,12 @@ import torch.optim as optim
 import torch.nn.functional as F
 import inspect
 import sys
+from torch.optim.lr_scheduler import CosineAnnealingLR
 
 from src.activations import get_activation
 
 
-def get_model(name, params):
+def get_model(name, params, n_epochs):
     """Looks for a model class with the specified name, instantiates it with the
     provided parameters and defines the loss and the optimizer.
 
@@ -15,12 +16,13 @@ def get_model(name, params):
         name (str): name of the model, defined as a class with that same name in the
         src.models module.
         params (dict): dictionary of parameters to pass to the model when instantiated.
+        n_epochs(int): number of epochs to run. Used to adjust the lr_scheduler
 
     Raises:
         ModuleNotFoundError: if the model does not exist, this exception is raised.
 
     Returns:
-        tuple: model, loss function and optimizer.
+        tuple: model, loss function, optimizer and lr_scheduler.
     """
     # Find the requested model by name
     cls_members = dict(inspect.getmembers(sys.modules[__name__], inspect.isclass))
@@ -33,8 +35,11 @@ def get_model(name, params):
 
     # Define the loss and the optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(net.parameters(), lr=0.0001)
-    return net, criterion, optimizer
+    optimizer = optim.Adam(net.parameters(), lr=1e-4)
+    lr_scheduler = CosineAnnealingLR(
+        optimizer, T_max=n_epochs + 1, eta_min=1e-6, last_epoch=-1, verbose=False
+    )
+    return net, criterion, optimizer, lr_scheduler
 
 
 class TestNet(nn.Module):

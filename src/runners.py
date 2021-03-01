@@ -9,6 +9,7 @@ def train(
     net,
     criterion,
     optimizer,
+    lr_scheduler,
     train_dataloader,
     test_dataloader,
     n_epochs,
@@ -22,6 +23,7 @@ def train(
         net (torch.nn.Module): model to train. normally defined in the models module
         criterion (torch.nn.modules.loss.Module): loss function
         optimizer (torch.optim): optimizer function
+        lr_scheduler (torch.optim.lr_scheduler): learning rate scheduler
         train_dataloader (torch.utils.data.dataloader.DataLoader): training set
         test_dataloader (torch.utils.data.dataloader.DataLoader): test set
         n_epochs (int): number of epochs to train
@@ -59,7 +61,7 @@ def train(
             name + ": " + str(round(value, 3)) for (name, value) in metrics_dict.items()
         ]
         pb.set_description(
-            f"Train_loss: {round(avg_loss, 3)} | Test_{' | Test_'.join(metrics_test)}"
+            f"LR: {round(lr_scheduler.get_last_lr()[0], 8)} | Train_loss: {round(avg_loss, 3)} | Test_{' | Test_'.join(metrics_test)}"
         )
 
         avg_loss = train_epoch(
@@ -69,6 +71,7 @@ def train(
             dataloader=train_dataloader,
             device=device,
         )
+        lr_scheduler.step()
 
     return net
 
