@@ -1,9 +1,10 @@
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from torchvision.datasets import CIFAR10, CIFAR100
+from torchvision.datasets import CIFAR10, CIFAR100, MNIST
 from src.constants import CIFAR10_CLASSES, CIFAR100_CLASSES
 import inspect
 import sys
+import torch
 
 
 def get_dataset(name, params):
@@ -66,4 +67,46 @@ def cifar100(batch_size_train=32, batch_size_test=128, n_workers=8):
     )
 
     classes = CIFAR100_CLASSES
+    return trainloader, testloader, classes
+
+
+def mnist(batch_size_train=32, batch_size_test=128, n_workers=8):
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.5), (0.5))]
+    )
+
+    trainset = MNIST(root="./data", train=True, download=True, transform=transform)
+    trainloader = DataLoader(
+        trainset, batch_size=batch_size_train, shuffle=True, num_workers=n_workers
+    )
+
+    testset = MNIST(root="./data", train=False, download=True, transform=transform)
+    testloader = DataLoader(
+        testset, batch_size=batch_size_test, shuffle=False, num_workers=n_workers
+    )
+
+    classes = list(range(10))
+    return trainloader, testloader, classes
+
+
+def mnist_flat(batch_size_train=32, batch_size_test=128, n_workers=8):
+    transform = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize((0.5), (0.5)),
+            transforms.Lambda(lambda x: torch.flatten(x)),
+        ]
+    )
+
+    trainset = MNIST(root="./data", train=True, download=True, transform=transform)
+    trainloader = DataLoader(
+        trainset, batch_size=batch_size_train, shuffle=True, num_workers=n_workers
+    )
+
+    testset = MNIST(root="./data", train=False, download=True, transform=transform)
+    testloader = DataLoader(
+        testset, batch_size=batch_size_test, shuffle=False, num_workers=n_workers
+    )
+
+    classes = list(range(10))
     return trainloader, testloader, classes
