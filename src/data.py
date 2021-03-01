@@ -38,12 +38,12 @@ def cifar10(batch_size_train=32, batch_size_test=128, n_workers=8):
 
     trainset = CIFAR10(root="./data", train=True, download=True, transform=transform)
     trainloader = DataLoader(
-        trainset, batch_size=batch_size_train, shuffle=True, num_workers=2
+        trainset, batch_size=batch_size_train, shuffle=True, num_workers=n_workers
     )
 
     testset = CIFAR10(root="./data", train=False, download=True, transform=transform)
     testloader = DataLoader(
-        testset, batch_size=batch_size_test, shuffle=False, num_workers=2
+        testset, batch_size=batch_size_test, shuffle=False, num_workers=n_workers
     )
 
     classes = CIFAR10_CLASSES
@@ -57,12 +57,12 @@ def cifar100(batch_size_train=32, batch_size_test=128, n_workers=8):
 
     trainset = CIFAR100(root="./data", train=True, download=True, transform=transform)
     trainloader = DataLoader(
-        trainset, batch_size=batch_size_train, shuffle=True, num_workers=2
+        trainset, batch_size=batch_size_train, shuffle=True, num_workers=n_workers
     )
 
     testset = CIFAR100(root="./data", train=False, download=True, transform=transform)
     testloader = DataLoader(
-        testset, batch_size=batch_size_test, shuffle=False, num_workers=2
+        testset, batch_size=batch_size_test, shuffle=False, num_workers=n_workers
     )
 
     classes = CIFAR100_CLASSES
