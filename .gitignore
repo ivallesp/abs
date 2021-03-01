@@ -17,3 +17,6 @@ models_*
 
 # Data path
 data
+
+# Tensorboard logs path
+tensorboard_logs

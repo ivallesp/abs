@@ -3,6 +3,7 @@ from src import metrics
 import numpy as np
 import torch
 import os
+from torch.utils.tensorboard import SummaryWriter
 
 
 def train(
@@ -34,17 +35,16 @@ def train(
     Returns:
         model (torch.nn.Module): model trained
     """
+    log_dir = os.path.join(save_path, "logs")
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    sw = SummaryWriter(log_dir=log_dir)
     net = net.to(device)
     pb = trange(n_epochs + 1, desc="", leave=True)
     # Calculate initial loss
-    metrics_dict = eval_epoch(
-        net=net,
-        dataloader=test_dataloader,
-        device=device,
-        metric_names=["crossentropy"],
-    )
-    avg_loss = metrics_dict.pop("crossentropy")
+
     for epoch in pb:
+        net.train()
         if epoch % save_every_n_epochs == 0:
             torch.save(
                 {
@@ -55,13 +55,41 @@ def train(
                 },
                 os.path.join(save_path, f"e_{epoch:03d}.pt"),
             )
-
-        metrics_dict = eval_epoch(net=net, dataloader=test_dataloader, device=device)
-        metrics_test = [
-            name + ": " + str(round(value, 3)) for (name, value) in metrics_dict.items()
+        # Log train metrics
+        metrics_dict_train = eval_epoch(
+            net=net,
+            dataloader=train_dataloader,
+            device=device,
+            metric_names=["crossentropy", "accuracy"],
+        )
+        metrics_train = [
+            name + ": " + str(round(value, 3))
+            for (name, value) in metrics_dict_train.items()
         ]
+        avg_loss = metrics_dict_train["crossentropy"]
+        avg_acc = metrics_dict_train["accuracy"]
+        sw.add_scalar("train/crossentropy", avg_loss, epoch)
+        sw.add_scalar("train/accuracy", avg_acc, epoch)
+
+        # Log test metrics
+        metrics_dict_test = eval_epoch(
+            net=net,
+            dataloader=test_dataloader,
+            device=device,
+            metric_names=["crossentropy", "accuracy"],
+        )
+        metrics_test = [
+            name + ": " + str(round(value, 3))
+            for (name, value) in metrics_dict_test.items()
+        ]
+        avg_loss_test = metrics_dict_test["crossentropy"]
+        avg_acc_test = metrics_dict_test["accuracy"]
+        sw.add_scalar("test/crossentropy", avg_loss_test, epoch)
+        sw.add_scalar("test/accuracy", avg_acc_test, epoch)
+
+        # Build the progress bar description
         pb.set_description(
-            f"LR: {round(lr_scheduler.get_last_lr()[0], 8)} | Train_loss: {round(avg_loss, 3)} | Test_{' | Test_'.join(metrics_test)}"
+            f"[EPOCH: {epoch}] [LR: {round(lr_scheduler.get_last_lr()[0], 8)}] Train_{' | Train_'.join(metrics_train)} | Test_{' | Test_'.join(metrics_test)}"
         )
 
         avg_loss = train_epoch(
