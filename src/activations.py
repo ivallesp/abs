@@ -30,7 +30,7 @@ def get_activation(name):
         function: the required activation function.
     """
     # Find the requested model by name
-    cls_members = dict(inspect.getmembers(sys.modules[__name__], inspect.isfunction))
+    cls_members = dict(inspect.getmembers(sys.modules[__name__]))
     if name not in cls_members:
         raise ModuleNotFoundError(f"Function {name} not found in module {__name__}")
     activation = cls_members[name]
