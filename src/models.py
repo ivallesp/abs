@@ -39,7 +39,7 @@ def get_model(name, params, n_epochs):
     # Define the loss and the optimizer
     criterion = nn.CrossEntropyLoss()
 
-    if name == "FC":
+    if name == "VGG16":
         optimizer = optim.Adam(net.parameters(), lr=1e-4)
         lr_scheduler = CosineAnnealingLR(
             optimizer, T_max=n_epochs + 1, eta_min=1e-6, last_epoch=-1, verbose=False

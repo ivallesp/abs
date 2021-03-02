@@ -44,6 +44,7 @@ def train(
     # Calculate initial loss
 
     for epoch in pb:
+        lr_scheduler.step()
         net.train()
         if epoch % save_every_n_epochs == 0:
             torch.save(
@@ -99,7 +100,6 @@ def train(
             dataloader=train_dataloader,
             device=device,
         )
-        lr_scheduler.step()
 
     return net
 
