@@ -28,11 +28,13 @@ def get_dataset(name, params):
     if name not in cls_members:
         raise ModuleNotFoundError(f"Function {name} not found in module {__name__}")
     dataset_loader = cls_members[name]
-    trainloader, testloader, classes = dataset_loader(**params)
-    return trainloader, testloader, classes
+    trainloader, testloader, classes, size, channels = dataset_loader(**params)
+    return trainloader, testloader, classes, size, channels
 
 
 def cifar10(batch_size_train=32, batch_size_test=128, n_workers=8):
+    input_size = 32
+    input_channels = 3
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
@@ -48,10 +50,12 @@ def cifar10(batch_size_train=32, batch_size_test=128, n_workers=8):
     )
 
     classes = CIFAR10_CLASSES
-    return trainloader, testloader, classes
+    return trainloader, testloader, classes, input_size, input_channels
 
 
 def cifar100(batch_size_train=32, batch_size_test=128, n_workers=8):
+    input_size = 32
+    input_channels = 3
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
@@ -67,10 +71,12 @@ def cifar100(batch_size_train=32, batch_size_test=128, n_workers=8):
     )
 
     classes = CIFAR100_CLASSES
-    return trainloader, testloader, classes
+    return trainloader, testloader, classes, input_size, input_channels
 
 
 def mnist(batch_size_train=32, batch_size_test=128, n_workers=8):
+    input_size = 28
+    input_channels = 1
     transform = transforms.Compose(
         [transforms.ToTensor(), transforms.Normalize((0.5), (0.5))]
     )
@@ -86,27 +92,4 @@ def mnist(batch_size_train=32, batch_size_test=128, n_workers=8):
     )
 
     classes = list(range(10))
-    return trainloader, testloader, classes
-
-
-def mnist_flat(batch_size_train=32, batch_size_test=128, n_workers=8):
-    transform = transforms.Compose(
-        [
-            transforms.ToTensor(),
-            transforms.Normalize((0.5), (0.5)),
-            transforms.Lambda(lambda x: torch.flatten(x)),
-        ]
-    )
-
-    trainset = MNIST(root="./data", train=True, download=True, transform=transform)
-    trainloader = DataLoader(
-        trainset, batch_size=batch_size_train, shuffle=True, num_workers=n_workers
-    )
-
-    testset = MNIST(root="./data", train=False, download=True, transform=transform)
-    testloader = DataLoader(
-        testset, batch_size=batch_size_test, shuffle=False, num_workers=n_workers
-    )
-
-    classes = list(range(10))
-    return trainloader, testloader, classes
+    return trainloader, testloader, classes, input_size, input_channels

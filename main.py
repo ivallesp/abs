@@ -57,7 +57,9 @@ def main():
     set_random_seed(random_seed)
 
     # Load data
-    train_dl, test_dl, classes = get_dataset(name=dataset_name, params={})
+    train_dl, test_dl, classes, input_size, input_channels = get_dataset(
+        name=dataset_name, params={}
+    )
 
     for activation_name in ACTIVATIONS:
 
@@ -69,7 +71,12 @@ def main():
         # Load model
         net, criterion, optimizer, lr_scheduler = get_model(
             name=model_name,
-            params={"n_outputs": len(classes), "activation_name": activation_name},
+            params={
+                "n_outputs": len(classes),
+                "activation_name": activation_name,
+                "input_size": input_size,
+                "input_channels": input_channels,
+            },
             n_epochs=N_EPOCHS,
         )
         # initialize_weights(net)
