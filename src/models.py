@@ -6,7 +6,7 @@ import sys
 import torch
 from torch.optim.lr_scheduler import CosineAnnealingLR
 
-from src.mobilenetV2 import MobileNetV2
+# from src.mobilenetV2 import MobileNetV2
 from src.vgg import VGG16
 from src.activations import get_activation
 from src.model_tools import GradualWarmupScheduler
