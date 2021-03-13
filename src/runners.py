@@ -46,6 +46,7 @@ def train(
     for epoch in pb:
         lr_scheduler.step()
         net.train()
+        log_params_distribution(writer=sw, model=net, epoch=epoch)
         if epoch % save_every_n_epochs == 0:
             torch.save(
                 {
@@ -102,6 +103,11 @@ def train(
         )
 
     return net
+
+
+def log_params_distribution(writer, model, epoch):
+    for name, param in model.named_parameters():
+        writer.add_histogram(name, param, epoch)
 
 
 def train_epoch(net, criterion, optimizer, dataloader, device):
