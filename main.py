@@ -13,13 +13,13 @@ ACTIVATIONS = [
     "absolute",
     "relu",
     "leaky_relu",
-    "softplus",
     "silu",
     "elu",
-    "selu",
-    "gelu",
-    "sigmoid",
     "tanh",
+    #"softplus",
+    #"selu",
+    #"gelu",
+    #"sigmoid",
 ]
 
 
