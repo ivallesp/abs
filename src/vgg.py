@@ -9,6 +9,7 @@ class VGG16(nn.Module):
         self, n_outputs, activation_name, init_weights=False, *args, **kwarfs
     ) -> None:
         super(VGG16, self).__init__()
+        act = _make_activation(activation_name)
         self.features = make_layers(
             [
                 64,
@@ -28,18 +29,15 @@ class VGG16(nn.Module):
                 512,
                 512,
                 512,
-                "M",
+                # "M",
             ],
             activation_name,
         )
-        self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 4096),
-            nn.ReLU(True),
-            nn.Dropout(),
+            nn.Linear(512 * 2 * 2, 4096),
+            act(),
             nn.Linear(4096, 4096),
-            nn.ReLU(True),
-            nn.Dropout(),
+            act(),
             nn.Linear(4096, n_outputs),
         )
         if init_weights:
@@ -47,7 +45,6 @@ class VGG16(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.features(x)
-        x = self.avgpool(x)
         x = torch.flatten(x, 1)
         x = self.classifier(x)
         return x
