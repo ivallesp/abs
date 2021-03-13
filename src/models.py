@@ -5,6 +5,7 @@ import inspect
 import sys
 import torch
 from torch.optim.lr_scheduler import CosineAnnealingLR
+
 from src.mobilenetV2 import MobileNetV2
 from src.vgg import VGG16
 from src.activations import get_activation
@@ -39,19 +40,13 @@ def get_model(name, params, n_epochs):
     # Define the loss and the optimizer
     criterion = nn.CrossEntropyLoss()
 
-    if name == "VGG16":
-        optimizer = optim.Adam(net.parameters(), lr=1e-4)
-        lr_scheduler = CosineAnnealingLR(
-            optimizer, T_max=n_epochs + 1, eta_min=1e-6, last_epoch=-1, verbose=False
-        )
-        lr_scheduler = GradualWarmupScheduler(
-            optimizer, multiplier=10, total_epoch=5, after_scheduler=lr_scheduler
-        )
-    else:
-        optimizer = optim.Adam(net.parameters(), lr=1e-4)
-        lr_scheduler = CosineAnnealingLR(
-            optimizer, T_max=n_epochs + 1, eta_min=1e-6, last_epoch=-1, verbose=False
-        )
+    optimizer = optim.Adam(net.parameters(), lr=1e-4)
+    lr_scheduler = CosineAnnealingLR(
+        optimizer, T_max=n_epochs + 1, eta_min=1e-6, last_epoch=-1, verbose=False
+    )
+    lr_scheduler = GradualWarmupScheduler(
+        optimizer, multiplier=10, total_epoch=5, after_scheduler=lr_scheduler
+    )
 
     return net, criterion, optimizer, lr_scheduler
 
@@ -80,7 +75,7 @@ class TestNet(nn.Module):
 class Conv6(nn.Module):
     def __init__(self, n_outputs, activation_name, input_size, input_channels):
         super(Conv6, self).__init__()
-        self.flatten_img_dim = input_size / 2 / 2 / 2
+        self.flatten_img_dim = int(input_size / 2 / 2 / 2)
         self.pool = nn.MaxPool2d(2, 2)
         self.activation = get_activation(activation_name)
         self.conv1_1 = nn.Conv2d(input_channels, 64, 3, padding=(1, 1))
@@ -114,7 +109,7 @@ class Conv4(nn.Module):
     def __init__(self, n_outputs, activation_name, input_size, input_channels):
         super(Conv4, self).__init__()
         self.pool = nn.MaxPool2d(2, 2)
-        self.flatten_img_dim = input_size / 2 / 2
+        self.flatten_img_dim = int(input_size / 2 / 2)
 
         self.activation = get_activation(activation_name)
         self.conv1_1 = nn.Conv2d(input_channels, 64, 3, padding=(1, 1))
@@ -144,7 +139,7 @@ class Conv4(nn.Module):
 class Conv2(nn.Module):
     def __init__(self, n_outputs, activation_name, input_size, input_channels):
         super(Conv2, self).__init__()
-        self.flatten_img_dim = input_size / 2
+        self.flatten_img_dim = int(input_size / 2)
 
         self.pool = nn.MaxPool2d(2, 2)
         self.activation = get_activation(activation_name)
