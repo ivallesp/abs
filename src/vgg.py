@@ -6,7 +6,13 @@ from typing import cast, List
 
 class VGG16(nn.Module):
     def __init__(
-        self, n_outputs, activation_name, init_weights=False, *args, **kwarfs
+        self,
+        n_outputs,
+        activation_name,
+        input_channels,
+        init_weights=False,
+        *args,
+        **kwarfs
     ) -> None:
         super(VGG16, self).__init__()
         act = _make_activation(activation_name)
@@ -32,6 +38,7 @@ class VGG16(nn.Module):
                 # "M",
             ],
             activation_name,
+            in_channels=input_channels,
         )
         self.classifier = nn.Sequential(
             nn.Linear(512 * 2 * 2, 4096),
@@ -78,10 +85,9 @@ def _make_activation(name):
     return Activation
 
 
-def make_layers(cfg, activation_name):
+def make_layers(cfg, activation_name, in_channels):
     act = _make_activation(activation_name)()
     layers: List[nn.Module] = []
-    in_channels = 3
     for v in cfg:
         if v == "M":
             layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
