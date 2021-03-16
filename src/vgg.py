@@ -42,7 +42,7 @@ class VGG16(nn.Module):
             in_channels=input_channels,
         )
         self.classifier = nn.Sequential(
-            nn.Linear(512 * int(input_size / 2 / 2 / 2 / 2), 4096),
+            nn.Linear(512 * int(input_size / 2 / 2 / 2 / 2)**2, 4096),
             act(),
             nn.Linear(4096, 4096),
             act(),
