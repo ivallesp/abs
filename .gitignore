@@ -20,3 +20,8 @@ data
 
 # Tensorboard logs path
 tensorboard_logs
+
+# Misc folders
+docs
+exported_summaries
+notebooks
