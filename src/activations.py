@@ -46,11 +46,19 @@ def absolute(x):
     return torch.abs(x)
 
 
-def softmodulus(x):
+def softmodulus_quadratic(x):
     abs_ = torch.abs(x)
     soft_ = x * x * (2 - abs_)
     mask_gt1 = abs_ > 1
     return soft_ * torch.logical_not(mask_gt1) + abs_ * mask_gt1
+
+
+def softmodulus_tanh10(x):
+    return _softmodulus_tanh(x, 10)
+
+
+def _softmodulus_tanh(x, alpha):
+    return x * torch.tanh(x * alpha)
 
 
 def _logcosh(x, alpha):

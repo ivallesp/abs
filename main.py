@@ -16,11 +16,12 @@ ACTIVATIONS = [
     "silu",
     "elu",
     "tanh",
-    "softmodulus"
-    #"softplus",
-    #"selu",
-    #"gelu",
-    #"sigmoid",
+    "softmodulus_tanh10",
+    "softmodulus_quadratic",
+    # "softplus",
+    # "selu",
+    # "gelu",
+    # "sigmoid",
 ]
 
 
