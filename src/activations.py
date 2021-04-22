@@ -46,5 +46,12 @@ def absolute(x):
     return torch.abs(x)
 
 
+def soft_module(x):
+    abs_ = torch.abs(x)
+    soft_ = x * x * (2 - abs_)
+    mask_gt1 = abs_ > 1
+    return soft_ * torch.logical_not(mask_gt1) + abs_ * mask_gt1
+
+
 def _logcosh(x, alpha):
     return torch.log(torch.cosh(alpha * x))
