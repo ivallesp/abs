@@ -16,7 +16,7 @@ ACTIVATIONS = [
     "silu",
     "elu",
     "tanh",
-    "softmodulus_tanh10",
+    "softmodulus_tanh100",
     "softmodulus_quadratic",
     # "softplus",
     # "selu",

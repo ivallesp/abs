@@ -57,6 +57,10 @@ def softmodulus_tanh10(x):
     return _softmodulus_tanh(x, 10)
 
 
+def softmodulus_tanh100(x):
+    return _softmodulus_tanh(x, 100)
+
+
 def _softmodulus_tanh(x, alpha):
     return x * torch.tanh(x * alpha)
 
