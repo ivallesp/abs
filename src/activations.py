@@ -46,7 +46,7 @@ def absolute(x):
     return torch.abs(x)
 
 
-def soft_module(x):
+def softmodulus(x):
     abs_ = torch.abs(x)
     soft_ = x * x * (2 - abs_)
     mask_gt1 = abs_ > 1
