@@ -18,6 +18,8 @@ ACTIVATIONS = [
     "tanh",
     "softmodulus_tanh100",
     "softmodulus_quadratic",
+    "pflu",
+    "mish",
     # "softplus",
     # "selu",
     # "gelu",

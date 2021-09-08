@@ -67,3 +67,11 @@ def _softmodulus_tanh(x, alpha):
 
 def _logcosh(x, alpha):
     return torch.log(torch.cosh(alpha * x))
+
+
+def pflu(x):
+    return torch.maximum(x, x / (1 + x * x))
+
+
+def mish(x):
+    return x * torch.tanh(torch.log(1 + torch.exp(x)))
