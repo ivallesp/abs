@@ -10,7 +10,7 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 from src.vgg import VGG16
 from src.activations import get_activation
 from src.model_tools import GradualWarmupScheduler
-
+from src.resnet import ResNet18
 
 def get_model(name, params, n_epochs):
     """Looks for a model class with the specified name, instantiates it with the
